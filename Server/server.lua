@@ -27,6 +27,8 @@ RegisterNetEvent("vending:open",function(which)
       TriggerClientEvent("vending:menu",source, "buy", which)
     elseif VendJson[which]["identifier"] == xPlayer.identifier then
       TriggerClientEvent("vending:menu",source, "manage", VendJson[which])
+    else
+      TriggerClientEvent("vending:menu",source, "client", VendJson[which])
     end
 end)
 
@@ -44,21 +46,6 @@ RegisterNetEvent("vending:buymachine",function(which)
     TriggerClientEvent("vending:notify",source,Translation[Config.Translation].BoughtMachine)
   else
     TriggerClientEvent("vending:notify",source,Translation[Config.Translation].YouDontHaveMoney)
-  end
-end)
-
-RegisterNetEvent("vending:withdraw",function(name)
-  local xPlayer = ESX.GetPlayerFromId(source)
-  local VendJson = getJson()
-  local HisVend = VendJson[name]
-  local money = HisVend["money"]
-  if money > 0 then
-    xPlayer.addMoney(money)
-    HisVend["money"] = 0
-    saveJson(VendJson,name,HisVend)
-    TriggerClientEvent("vending:notify",source, Translation[Config.Translation].YouWithdrawed .. money)
-  else
-    TriggerClientEvent("vending:notify",source, Translation[Config.Translation].NoMoneyInVending)
   end
 end)
 
@@ -132,20 +119,24 @@ RegisterNetEvent("vending:buyitem",function(item,count,tab_name)
   local VendJson = getJson()
   local HisVend = VendJson[tab_name]
   local itemsTable = HisVend["items"][item]
-
-  local price = tonumber(itemsTable["itemprice"] * count)
-  if itemsTable["itemcount"] <= count then
-    if xPlayer.getMoney() >= price then
-      itemsTable["itemcount"] = tonumber(itemsTable["itemcount"]-count)
-      HisVend["items"][item] = itemsTable
-      xPlayer.removeMoney(price)
-      xPlayer.addInventoryItem(item,count)
-      saveJson(VendJson,tab_name,HisVend)
-      TriggerClientEvent("vending:notify",source, Translation[Config.Translation].YouBoughtItem.. "x"..count.." "..ESX.GetItemLabel(item))
-    else
-      TriggerClientEvent("vending:notify",source, Translation[Config.Translation].YouDontHaveMoney)
-    end
+  if oount > itemsTable["itemcount"] then
+    TriggerClientEvent("vending:notify",source, Translation[Config.Translation].NoItemsInStock)
+    return
   else
-    TriggerClientEvent("vending:notify",source, Translation[Config.Translation].SmthWrong)
+    local price = tonumber(itemsTable["itemprice"] * count)
+    if itemsTable["itemcount"] <= count then
+      if xPlayer.getMoney() >= price then
+        itemsTable["itemcount"] = tonumber(itemsTable["itemcount"]-count)
+        HisVend["items"][item] = itemsTable
+        xPlayer.removeMoney(price)
+        xPlayer.addInventoryItem(item,count)
+        saveJson(VendJson,tab_name,HisVend)
+        TriggerClientEvent("vending:notify",source, Translation[Config.Translation].YouBoughtItem.. "x".. count.." "..ESX.GetItemLabel(item))
+      else
+        TriggerClientEvent("vending:notify",source, Translation[Config.Translation].YouDontHaveMoney)
+      end
+    else
+      TriggerClientEvent("vending:notify",source, Translation[Config.Translation].SmthWrong)
+    end
   end
 end)
