@@ -27,7 +27,7 @@ local function ManageMenu(TableV)
     {label = (Translation[Config.Translation].ItemManagment), value = 'managment'},
   }
 	ESX.UI.Menu.CloseAll()
-	ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'buymachine', 
+	ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'management', 
 	{title    = (Translation[Config.Translation].VendingMachine..' ['..TableV["name"]..']'),align    = 'center',elements = elements}, function(data, menu)
     if data.current.value == "withdraw" then
       TriggerServerEvent("vending:withdraw",TableV["name"])
@@ -58,7 +58,7 @@ function SellItemMenu(TableV)
 	ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'sellitem', 
 	{title    = (Translation[Config.Translation].VendingMachine..' ['..TableV["name"]..']'),align    = 'center',elements = elements}, function(data, menu)
       item = data.current.value
-        ESX.UI.Menu.Open("dialog",GetCurrentResourceName(),"howmuch",{title = Translation[Config.Translation].ItemCcountToSell},function(data2, menu2)
+        ESX.UI.Menu.Open("dialog",GetCurrentResourceName(),"howmuch",{title = Translation[Config.Translation].ItemCountToSell},function(data2, menu2)
           count = data2.value
               ESX.UI.Menu.Open("dialog",GetCurrentResourceName(),"price",{title = Translation[Config.Translation].PriceForItem},function(data3, menu3)
                 price = data3.value
@@ -97,7 +97,7 @@ function ItemManagmentMenu(TableV)
         {label = (Translation[Config.Translation].ChangeItemPrice), value = 'changeprice'},
       }
       ESX.UI.Menu.CloseAll()
-      ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'buymachine', 
+      ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'itemmodification', 
       {title    = (Translation[Config.Translation].VendingMachine..' ['..TableV["name"]..']'),align    = 'center',elements = elements2}, function(data2, menu2)
         if data2.current.value == "delete" then
           TriggerServerEvent("vending:deleteItem",item,TableV["name"])
@@ -121,20 +121,34 @@ function ItemManagmentMenu(TableV)
 end
 
 function ClientMenu(TableV)
+  elements = {}
 	for k,v in ipairs(TableV["items"]) do
 		if v["itemcount"] > 0 then
       table.insert(elements,{label = v["itemlabel"].." [x"..v["itemcount"].."]",value = v["itemname"],})
 		end
   end
 
+  ESX.UI.Menu.CloseAll()
+  ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'managmentitem', 
+  {title    = (Translation[Config.Translation].VendingMachine..' ['..TableV["name"]..']'),align    = 'center',elements = elements}, function(data, menu)
+    item = data.current.value
+    ESX.UI.Menu.Open("dialog",GetCurrentResourceName(),"buycount",{title = Translation[Config.Translation].ItemBuyCount},function(data2, menu2)
+        TriggerServerEvent("vending:buyitem",item,data2.current.value,TableV["name"])
+      menu2.close()
+    end,
+      function(_, menu2)
+      menu2.close()
+    end)
 
+  end, function(data, menu)
+    menu.close()
+  end)  
 
 end
 
 local function notify(text)
   ESX.ShowNotification(text)
 end
-
 
 --[[
   THREADS
@@ -194,6 +208,8 @@ RegisterNetEvent("vending:menu",function(menutype,which)
     BuyMenu(which)
   elseif menutype == "manage" then
     ManageMenu(which)
+  elseif menutype == "client" then
+    ClientMenu(which)
   end
 end)
 
@@ -201,8 +217,6 @@ RegisterNetEvent("vending:notify",function(text)
   notify(text)
 end)
 
-
---[[ TODO: Fix blip multiplying
 RegisterNetEvent("vending:updateBlip",function(Table)
   for a in pairs(Table) do
     AddTextEntry(a, Translation[Config.Translation].VendingMachine.." "..tostring(a))
@@ -213,8 +227,6 @@ RegisterNetEvent("vending:updateBlip",function(Table)
     EndTextCommandSetBlipName(blipHandler)
   end
 end)
---]]
-
 
 --[[
   COMMANDS
