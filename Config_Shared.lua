@@ -25,7 +25,7 @@ Translation["PL"] = {
   NoMoneyInVending = "Nie masz czego wypłacić",
   YouWithdrawed = "Wypłaciłeś $",
   SellItem = "Sprzedaj przedmiot",
-  ItemCcountToSell = "Ile chcesz sprzedać?",
+  ItemCountToSell = "Ile chcesz sprzedać?",
   PriceForItem = "Jaka jest cena za jeden przedmiot?",
   YouDontHaveThatMuchItems = "Nie masz wystarczająco przedmiotów",
   YouPutItemsInStock = "Wsadziłeś przedmiot/y do automatu",
@@ -36,7 +36,9 @@ Translation["PL"] = {
   YouTakeItemFromShop = "Wyciągnąłeś przedmiot z automatu",
   YouChangedPrice = "Zmieniłeś cene przedmiotu",
   YouBoughtItem = "Zakupiłeś ",
-  SmthWrong = "Coś poszło nie tak, spróbuj ponownie"
+  SmthWrong = "Coś poszło nie tak, spróbuj ponownie",
+  ItemBuyCount = "Ile chcesz kupić?",
+  NoItemsInStock = "Nie ma tyle przedmiotów w automacie",
 }
 
 Translation["EN"] = {
@@ -50,7 +52,7 @@ Translation["EN"] = {
   NoMoneyInVending = "There is no money to withdraw",
   YouWithdrawed = "You withdrawed $",
   SellItem = "Sell item",
-  ItemCcountToSell = "How much you want to sell?",
+  ItemCountToSell = "How much you want to sell?",
   PriceForItem = "What is the price for each item?",
   YouDontHaveThatMuchItems = "You don't have that much items",
   YouPutItemsInStock = "You put items in a stock",
@@ -62,4 +64,6 @@ Translation["EN"] = {
   YouChangedPrice = "You set new price for item",
   YouBoughtItem = "You bought ",
   SmthWrong = "Something gone wrong, try again",
+  ItemBuyCount = "How much you want to buy?",
+  NoItemsInStock = "There is no that much items in vending machine",
 }
